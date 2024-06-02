@@ -13,13 +13,13 @@ def ingest_files(**kwargs) -> pd.DataFrame:
     dfs: List[pd.DataFrame] = []
 
     
-        response = requests.get(
+    response = requests.get(
                "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-03.parquet"
             )
 
-        if response.status_code != 200:
-            raise Exception(response.text)
+    if response.status_code != 200:
+        raise Exception(response.text)
 
-        df = pd.read_parquet(BytesIO(response.content))
+    df = pd.read_parquet(BytesIO(response.content))
 
     return df
