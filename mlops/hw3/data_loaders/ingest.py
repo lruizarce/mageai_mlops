@@ -10,8 +10,6 @@ if 'data_loader' not in globals():
 
 @data_loader
 def ingest_files(**kwargs) -> pd.DataFrame:
-    dfs: List[pd.DataFrame] = []
-
     
     response = requests.get(
                "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-03.parquet"
