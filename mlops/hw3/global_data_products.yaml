@@ -1,0 +1,11 @@
+hw3_trainning_set:
+  object_type: pipeline
+  object_uuid: data_preparation_hw3
+  outdated_after:
+    seconds: 600
+  outdated_starting_at:
+    second_of_minute: null
+  project: hw3
+  repo_path: /home/src/mlops/hw3
+  settings:
+    build: {}

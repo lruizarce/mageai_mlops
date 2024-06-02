@@ -51,7 +51,7 @@ blocks:
   language: python
   name: build
   retry_config: null
-  status: updated
+  status: executed
   timeout: null
   type: data_exporter
   upstream_blocks:
