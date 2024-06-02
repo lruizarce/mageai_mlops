@@ -6,18 +6,38 @@ blocks:
       path: hw3/global_data_products/training_set.py
     global_data_product:
       uuid: hw3_trainning_set
-  downstream_blocks: []
+  downstream_blocks:
+  - load_models
   executor_config: null
   executor_type: local_python
   has_callback: false
   language: python
   name: training set
   retry_config: null
-  status: not_executed
+  status: executed
   timeout: null
   type: global_data_product
   upstream_blocks: []
   uuid: training_set
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    dynamic: true
+    file_source:
+      path: hw3/custom/load_models.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: load-models
+  retry_config: null
+  status: updated
+  timeout: null
+  type: custom
+  upstream_blocks:
+  - training_set
+  uuid: load_models
 cache_block_output_in_memory: false
 callbacks: []
 concurrency_config: {}
