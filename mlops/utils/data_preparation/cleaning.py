@@ -7,7 +7,7 @@ def clean(
 ) -> pd.DataFrame:
     # Convert pickup and dropoff datetime columns to datetime type
     df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
-    df.tpep_pickup_datetime = pd.to_datetime(df.ltpep_pickup_datetime)
+    df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
 
     # Calculate the trip duration in minutes
     df['duration'] = df.tpep_dropoff_datetime - df.tpep_pickup_datetime
