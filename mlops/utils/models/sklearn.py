@@ -67,7 +67,7 @@ def tune_hyperparameters(
     eval_metric: Callable[[Series, Series], float] = mean_squared_error,
     fit_params: Optional[Dict] = None,
     hyperparameters: Optional[Dict] = None,
-    max_evaluations: int = 50,
+    max_evaluations: int = 5,
     random_state: int = 42,
 ) -> Dict:
     def __objective(

@@ -1,42 +1,78 @@
-from typing import List, Tuple
+from typing import Tuple, Union, Dict
 
-from pandas import DataFrame, Series
-from scipy.sparse._csr import csr_matrix
-from sklearn.base import BaseEstimator
+import os
+import pickle
+import mlflow
 
-from mlops.utils.data_preparation.encoders import vectorize_features
-from mlops.utils.data_preparation.feature_selector import select_features
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.feature_extraction import DictVectorizer
+from sklearn.metrics import mean_squared_error
+
 
 if 'data_exporter' not in globals():
     from mage_ai.data_preparation.decorators import data_exporter
-if 'test' not in globals():
-    from mage_ai.data_preparation.decorators import test
 
 
 @data_exporter
-def export(
-    data: Tuple[DataFrame, DataFrame, DataFrame], *args, **kwargs
+def train_model(
+    train_df: pd.DataFrame, 
+    **kwargs,
 ) -> Tuple[
-    csr_matrix,
-    csr_matrix,
-    csr_matrix,
-    Series,
-    Series,
-    Series,
-    BaseEstimator,
+    DictVectorizer,
+    LinearRegression,
+    Dict[str,Union[int, float, str, bool]],
 ]:
-    df, df_train, df_val = data
-    target = kwargs.get('target', 'duration')
+    """
+    train a DictVectorizer and an LinearRegression Model
+    """
+    
+    # feature selection
+    categorical = ["PULocationID", "DOLocationID"]
+    numerical = []
 
-    X, _, _ = vectorize_features(select_features(df))
-    y: Series = df[target]
+    # train a dict vectorizer
+    dv = DictVectorizer()
+    train_dicts = train_df[categorical+numerical].to_dict(orient="records")
+    X_train = dv.fit_transform(train_dicts)
+    y_train = train_df.duration
 
-    X_train, X_val, dv = vectorize_features(
-        select_features(df_train),
-        select_features(df_val),
-    )
-    y_train = df_train[target]
-    y_val = df_val[target]
+    # setup mlflow 
+    
+    mlflow.set_tracking_uri("http://mlflow:5000")
+    mlflow.set_experiment("yellow-taxi-duration")
+    
+    # print(mlflow.get_tracking_uri())
+    with mlflow.start_run():
+        mlflow.log_param("model","linear_regression")
+        # train model
+        model = LinearRegression()
+        model.fit(X_train, y_train)
 
-    return X, X_train, X_val, y, y_train, y_val, dv
+        # evalulate model
+        y_pred = model.predict(X_train)
+        rmse = mean_squared_error(y_train,y_pred,squared=False)
+        mse = mean_squared_error(y_train,y_pred)
+        intercept = model.intercept_
 
+        metrics={
+            "rmse":rmse,
+            "mse":mse,
+            "intercept":intercept,
+        }
+
+        os.makedirs("preprocessing",exist_ok=True)
+        with open("preprocessing/preprocessing.b",'wb') as f:
+            pickle.dump(dv,f)
+
+        mlflow.log_metrics(metrics)
+        mlflow.sklearn.log_model(model,"model")
+        mlflow.log_artifact(
+            "preprocessing/preprocessing.b",
+            artifact_path="model",
+
+        )
+        
+
+
+    return dv, model, metrics

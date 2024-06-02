@@ -35,5 +35,10 @@ def hyperparameter_tuning(
         max_evaluations=kwargs.get('max_evaluations'),
         random_state=kwargs.get('random_state'),
     )
+    # Debug: Print return values
+    print(f"Hyperparameters: {hyperparameters}")
+    print(f"X shape: {X.shape}")
+    print(f"y shape: {y.shape}")
+    print(f"Model Info: {dict(cls=model_class, name=model_class_name)}")
 
     return hyperparameters, X, y, dict(cls=model_class, name=model_class_name)

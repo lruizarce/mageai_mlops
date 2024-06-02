@@ -39,6 +39,24 @@ blocks:
   upstream_blocks:
   - ingest
   uuid: prepare
+- all_upstream_blocks_executed: true
+  color: null
+  configuration:
+    file_path: hw3/scratchpads/mflow.py
+    file_source:
+      path: hw3/scratchpads/mflow.py
+  downstream_blocks: []
+  executor_config: null
+  executor_type: local_python
+  has_callback: false
+  language: python
+  name: mflow
+  retry_config: null
+  status: not_executed
+  timeout: null
+  type: scratchpad
+  upstream_blocks: []
+  uuid: mflow
 - all_upstream_blocks_executed: false
   color: null
   configuration:
@@ -142,7 +160,7 @@ widgets:
   language: python
   name: prepare_histogram_m7
   retry_config: null
-  status: executed
+  status: failed
   timeout: null
   type: chart
   upstream_blocks:
